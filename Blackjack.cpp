@@ -32,7 +32,7 @@ Blackjack::Blackjack() : deck{new Deck{6}}, running{true}, numPlayerHands{0} {
         bool playerBlackjack = std::count(playerHandValues.begin(), playerHandValues.end(), blackjackValue) > 0 ? true : false;
         bool dealerBlackjack = std::count(dealerHandValues.begin(), dealerHandValues.end(), blackjackValue) > 0 ? true : false;
 
-        std::cout << "(hit/stand/split) : ";
+        std::cout << "Option on player hand" << numHand << "(hit/stand/split) : ";
         std::string userChoice;
         std::cin >> userChoice;
 
