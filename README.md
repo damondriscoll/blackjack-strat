@@ -1,6 +1,6 @@
-# Blackjack Game
+# Blackjack
 
-Work in progress!
+Blackjack UI with basic strategy advice written in C++
 
 # TODO
 
