@@ -9,9 +9,7 @@ A terminal version of Blackjack that enforces [basic strategy](https://en.wikipe
 If you have both a C++ compiler and CMake installed, from the root of the project run
 ```
 mkdir build
-
 cmake -S . -B build
-
 cmake --build build
 ```
 
