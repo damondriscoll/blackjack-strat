@@ -1,8 +1,27 @@
-# Blackjack
+# Blackjack Basic Strategy
 
-Blackjack UI with basic strategy advice written in C++
+> cli blackjack with basic strategy warnings
 
-# TODO
+A terminal version of Blackjack that enforces basic strategy, written in C++
 
-- [ ] Basic strategy forcing
-- [ ] UI
+## Installation
+
+If you have both a C++ compiler and CMake installed, from the root of the project run
+```console
+mkdir build
+cd build
+
+cmake .
+
+cmake --build .
+```
+
+## Usage
+
+```console
+./build/blackjack.exe
+```
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
