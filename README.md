@@ -1,4 +1,4 @@
-# Blackjack Basic Strategy
+# blackjack-strat
 
 > cli blackjack with basic strategy warnings
 
