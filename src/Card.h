@@ -33,13 +33,13 @@ public:
 
     friend std::ostream &operator << ( std::ostream& strm, Rank r )
     {
-        const std::string rankNames[] = { "Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King" };
+        const std::string rankNames[] = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
         return strm << rankNames[r];
     };
 
     friend std::ostream &operator << ( std::ostream& strm, Suit s )
     {
-        const std::string suitNames[] = { "Spades", "Hearts", "Clubs", "Diamonds" };
+        const std::string suitNames[] = { "♧", "♡", "♤", "♢" };
         return strm << suitNames[s];
     };
 

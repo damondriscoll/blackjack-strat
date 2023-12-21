@@ -6,38 +6,38 @@
 #include <string>
 #include <experimental/iterator>
 
-const auto blackjackValue = 21;
+constexpr int BLACKJACK_VALUE = 21;
 
 Blackjack::Blackjack() : deck{new Deck{6}}, running{true}, numPlayerHands{0} {
     getDeck()->shuffleCards();
     resetHands();
     while (running) {
         std::cout << "Cards remaining in pile: " << getDeck()->getCardSet().size() << "\n\n";
-        std::cout << "Dealer hand: " << dealerHand[0]->getRank() << " of " << dealerHand[0]->getSuit() << ", and a face down card" << std::endl;
+        std::cout << "Dealer upcard: [" << dealerHand[0]->getRank() << dealerHand[0]->getSuit() << ']'<< std::endl;
         std::string numHand = playerHands.size() > 1 ? " " + std::to_string(playerHands.size()) : "";
         for ( auto ph : playerHands ) {
             std::cout << "Player hand" << numHand << ": ";
             for (auto iter = ph.begin(), end = ph.end(); iter != end; iter++) {
                 if (iter != ph.begin()) std::cout << ", ";
                 Card * c = *iter;
-                std::cout << c->getRank() << " of " << c->getSuit();
+                std::cout << '[' << c->getRank() << c->getSuit() << ']';
             }
             std::cout << "\n\n";
         }
         
         
 
-        std::vector<int> playerHandValues = possibleHandValues(playerHand);
+        std::vector<int> playerHandValues = possibleHandValues(playerHands[0]);
         std::vector<int> dealerHandValues = possibleHandValues(dealerHand);
-        bool playerBlackjack = std::count(playerHandValues.begin(), playerHandValues.end(), blackjackValue) > 0 ? true : false;
-        bool dealerBlackjack = std::count(dealerHandValues.begin(), dealerHandValues.end(), blackjackValue) > 0 ? true : false;
+        bool playerBlackjack = std::count(playerHandValues.begin(), playerHandValues.end(), BLACKJACK_VALUE) > 0 ? true : false;
+        bool dealerBlackjack = std::count(dealerHandValues.begin(), dealerHandValues.end(), BLACKJACK_VALUE) > 0 ? true : false;
 
         std::cout << "Option on player hand" << numHand << "(hit/stand/split) : ";
         std::string userChoice;
         std::cin >> userChoice;
 
         if ( userChoice == "hit" ) {
-            playerHand.push_back(getDeck()->getTopCard());
+            playerHands[0].push_back(getDeck()->getTopCard());
         } else if ( userChoice == "stand" ) {
             while (dealerHandValues.size() != 0 && *std::max_element(dealerHandValues.begin(), dealerHandValues.end()) < 17) {
                 dealerHand.push_back(getDeck()->getTopCard());
@@ -66,7 +66,7 @@ Deck * Blackjack::getDeck() {
 
 bool Blackjack::inBoundsHand(int c)
 {
-    if ( c <= blackjackValue ) return true;
+    if ( c <= BLACKJACK_VALUE ) return true;
     return false;
 }
 
@@ -82,9 +82,10 @@ void Blackjack::playAgainCheck() {
 }
 
 void Blackjack::resetHands() {
-    playerHands.clear();
-    playerHands[0].push_back(getDeck()->getTopCard());
-    playerHands[0].push_back(getDeck()->getTopCard());
+    std::vector<Card *> newPlayerHand;
+    newPlayerHand.push_back(getDeck()->getTopCard());
+    newPlayerHand.push_back(getDeck()->getTopCard());
+    playerHands.push_back(newPlayerHand);
     dealerHand.clear();
     dealerHand.push_back(getDeck()->getTopCard());
     dealerHand.push_back(getDeck()->getTopCard());

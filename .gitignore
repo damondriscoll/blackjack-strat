@@ -1,2 +1,8 @@
 .vscode
-a.exe
+
+out/
+bin/
+build/
+
+/.vs
+CMakeSettings.json
