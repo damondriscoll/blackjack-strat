@@ -2,23 +2,22 @@
 
 > cli blackjack with basic strategy warnings
 
-A terminal version of Blackjack that enforces basic strategy, written in C++
+A terminal version of Blackjack that enforces [basic strategy](https://en.wikipedia.org/wiki/Blackjack#Basic_strategy), written in C++
 
 ## Installation
 
 If you have both a C++ compiler and CMake installed, from the root of the project run
-```console
+```
 mkdir build
-cd build
 
-cmake .
+cmake -S . -B build
 
-cmake --build .
+cmake --build build
 ```
 
 ## Usage
 
-```console
+```
 ./build/blackjack.exe
 ```
 
