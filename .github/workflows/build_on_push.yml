@@ -70,9 +70,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    
-    env:
-      PATH: ${{ env.PATH }};C:\Program Files\LLVM\bin  # Add LLVM/Clang to PATH
 
     steps:
       - name: Checkout
@@ -83,7 +80,8 @@ jobs:
 
       - name: Configure and build
         run: |
-          choco install llvm
+          choco install llvmg
+          echo "PATH=$PATH;C:\Program Files\LLVM\bin" >> $GITHUB_ENV
           clang++ --version
           mkdir build
           cd build
