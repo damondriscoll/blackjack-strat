@@ -81,6 +81,8 @@ jobs:
       - name: Configure and build
         run: |
           choco install llvm
+          echo "::add-path::C:\\Program Files\\LLVM\\bin"
+          clang++ --version
           mkdir build
           cd build
           cmake -DCMAKE_CXX_COMPILER=clang++ ../
