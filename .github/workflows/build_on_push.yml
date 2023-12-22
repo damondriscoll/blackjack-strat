@@ -58,6 +58,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./build/blackjack_${{ matrix.os }}${{ steps.get_extension.outputs.extension }}
+            ./build/blackjack*
           tag_name: v1.0.0
           token: ${{ secrets.GITHUB_TOKEN }}
