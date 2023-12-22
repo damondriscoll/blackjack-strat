@@ -39,27 +39,25 @@ jobs:
               echo "::set-output name=extension::.exe"
               ;;
           esac
-      
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: false
-          prerelease: false
 
-      - name: Get upload URL
-        id: get_upload_url
-        run: echo "::set-output name=upload_url::${{ steps.create_release.outputs.upload_url }}"
+      - name: Rename file based on OS
+        run: |
+          case ${{ matrix.os }} in
+            ubuntu-latest)
+              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_ubuntu${{ steps.get_extension.outputs.extension }}
+              ;;
+            macos-latest)
+              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_macos${{ steps.get_extension.outputs.extension }}
+              ;;
+            windows-latest)
+              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_windows${{ steps.get_extension.outputs.extension }}
+              ;;
+          esac
 
-      - name: Upload release assets
-        id: upload-release-assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/blackjack${{ steps.get_extension.outputs.extension }}
-          asset_name: "${{ matrix.os }}_${{ matrix.compiler }}${{ steps.get_extension.outputs.extension }}"
-          asset_content_type: application/octet-stream
+          files: |
+            ./build/blackjack_${{ matrix.os }}${{ steps.get_extension.outputs.extension }}
+          tag_name: v1.0.0
+          token: ${{ secrets.GITHUB_TOKEN }}
