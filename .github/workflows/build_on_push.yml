@@ -60,7 +60,7 @@ jobs:
       
       - name: Rename file based on OS
         run: |
-          mv ./build/blackjack ./build/blackjack_ubuntu
+          mv ./build/blackjack ./build/blackjack_macos
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -74,7 +74,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        compiler: [cl]
+        compiler: [g++]
 
     steps:
       - name: Checkout
@@ -92,7 +92,7 @@ jobs:
       
       - name: Rename file based on OS
         run: |
-          mv ./build/blackjack.exe ./build/blackjack_ubuntu.exe
+          mv ./build/blackjack.exe ./build/blackjack_windows.exe
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
