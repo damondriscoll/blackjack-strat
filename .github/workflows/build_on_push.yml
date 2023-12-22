@@ -88,7 +88,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -G "MinGW Makefiles" -DCMAKE_CXX_COMPILER=clang++ ../
+          cmake -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang -B. -S../
           cmake --build .
       
       - name: Rename file based on OS
