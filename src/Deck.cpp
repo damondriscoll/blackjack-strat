@@ -4,7 +4,7 @@
 
 constexpr int DECK_SIZE = 52;
 
-Deck::Deck(int n) : nDecks{n}
+Deck::Deck(int n) : nDecks(n)
 {
     refill(); // Initial deck population
 }
