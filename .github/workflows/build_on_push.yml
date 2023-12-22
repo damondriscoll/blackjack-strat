@@ -28,18 +28,17 @@ jobs:
           cmake ../
           cmake --build .
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v1.0.0 
-          release_name: Release v1.0.0
-          body: |
-            Release notes and description here.
-          draft: false
-          prerelease: false
+      - name: Determine executable extension
+        id: get_extension
+        run: |
+          case ${{ matrix.os }} in
+            ubuntu-latest|macos-latest)
+              echo "::set-output name=extension::"
+              ;;
+            windows-latest)
+              echo "::set-output name=extension::.exe"
+              ;;
+          esac
 
       - name: Upload release assets
         id: upload-release-assets
@@ -48,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/blackjack*
-          asset_name: "${{ matrix.os }}_${{ matrix.compiler }}.zip"
-          asset_content_type: application/zip
+          asset_path: ./build/blackjack${{ steps.get_extension.outputs.extension }}
+          asset_name: "${{ matrix.os }}_${{ matrix.compiler }}${{ steps.get_extension.outputs.extension }}"
+          asset_content_type: application/octet-stream
