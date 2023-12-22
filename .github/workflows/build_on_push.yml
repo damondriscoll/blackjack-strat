@@ -80,12 +80,9 @@ jobs:
 
       - name: Configure and build
         run: |
-          choco install llvmg
-          echo "PATH=$PATH;C:\Program Files\LLVM\bin" >> $GITHUB_ENV
-          clang++ --version
           mkdir build
           cd build
-          cmake -DCMAKE_CXX_COMPILER=clang++ ../
+          cmake -DCMAKE_CXX_COMPILER=g++ ../
           cmake --build .
       
       - name: Rename file based on OS
