@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_CXX_COMPILER=g++ ../
+          cmake ../
           cmake --build .
       
       - name: Rename file based on OS
