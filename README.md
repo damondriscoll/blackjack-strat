@@ -10,6 +10,7 @@ A terminal version of Blackjack that enforces [basic strategy](https://en.wikipe
 
 You can then run the executable, and the commands are provided in the application
 
+
 ## Manual Installation
 
 Install a [compatible C++ compiler](https://en.wikipedia.org/wiki/List_of_compilers#C++_compilers), and add to PATH

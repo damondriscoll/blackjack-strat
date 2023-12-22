@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(blackjack)
 
+set(CMAKE_CXX_STANDARD 11)
+
 set(SOURCES
     src/Card.cpp
     src/Deck.cpp
