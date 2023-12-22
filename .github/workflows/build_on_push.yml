@@ -20,7 +20,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_CXX_COMPILER=g++ ../  # Use g++ for Ubuntu
+          cmake -DCMAKE_CXX_COMPILER=g++ ../
           cmake --build .
       
       - name: Rename file based on OS
@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_CXX_COMPILER=clang++ ../  # Use clang++ for macOS
+          cmake -DCMAKE_CXX_COMPILER=clang++ ../
           cmake --build .
       
       - name: Rename file based on OS
@@ -81,9 +81,8 @@ jobs:
       - name: Configure and build
         run: |
           mkdir build
-          cd build
-          cmake -DCMAKE_CXX_COMPILER=cl ../  # Use cl for Windows
-          cmake --build .
+          cmake -G "Visual Studio 17 2022" -B ./build -S .
+          cmake --build ./build --config Release
       
       - name: Rename file based on OS
         run: |
