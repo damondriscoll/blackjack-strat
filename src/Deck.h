@@ -3,16 +3,20 @@
 
 #include "Card.h"
 #include <vector>
+#include <random>
 
 class Deck
 {
 public:
     Deck(int numberDecks);
-    void shuffleCards();
+    ~Deck();
+    void refill();
+    void shuffle();
+    int size();
     Card * getTopCard();
-    std::vector<Card*> getCardSet();
 
 private:
+    int nDecks;
     std::vector<Card*> cardSet;
 };
 

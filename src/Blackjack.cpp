@@ -6,115 +6,130 @@
 #include <string>
 #include <experimental/iterator>
 
-constexpr int BLACKJACK_VALUE = 21;
+Blackjack::Blackjack(int numDecks) : deck(new Deck(numDecks)) {}
 
-Blackjack::Blackjack() : deck{new Deck{6}}, running{true}, numPlayerHands{0} {
-    getDeck()->shuffleCards();
-    resetHands();
-    while (running) {
-        std::cout << "Cards remaining in pile: " << getDeck()->getCardSet().size() << "\n\n";
-        std::cout << "Dealer upcard: [" << dealerHand[0]->getRank() << dealerHand[0]->getSuit() << ']'<< std::endl;
-        std::string numHand = playerHands.size() > 1 ? " " + std::to_string(playerHands.size()) : "";
-        for ( auto ph : playerHands ) {
-            std::cout << "Player hand" << numHand << ": ";
-            for (auto iter = ph.begin(), end = ph.end(); iter != end; iter++) {
-                if (iter != ph.begin()) std::cout << ", ";
-                Card * c = *iter;
-                std::cout << '[' << c->getRank() << c->getSuit() << ']';
-            }
-            std::cout << "\n\n";
+Blackjack::~Blackjack() { clearHands(); }
+
+void Blackjack::clearHands() {
+    for (std::vector<Card*>& hand : playerHands) {
+        for (Card* card : hand) {
+            delete card;
         }
-        
-        
-
-        std::vector<int> playerHandValues = possibleHandValues(playerHands[0]);
-        std::vector<int> dealerHandValues = possibleHandValues(dealerHand);
-        bool playerBlackjack = std::count(playerHandValues.begin(), playerHandValues.end(), BLACKJACK_VALUE) > 0 ? true : false;
-        bool dealerBlackjack = std::count(dealerHandValues.begin(), dealerHandValues.end(), BLACKJACK_VALUE) > 0 ? true : false;
-
-        std::cout << "Option on player hand" << numHand << "(hit/stand/split) : ";
-        std::string userChoice;
-        std::cin >> userChoice;
-
-        if ( userChoice == "hit" ) {
-            playerHands[0].push_back(getDeck()->getTopCard());
-        } else if ( userChoice == "stand" ) {
-            while (dealerHandValues.size() != 0 && *std::max_element(dealerHandValues.begin(), dealerHandValues.end()) < 17) {
-                dealerHand.push_back(getDeck()->getTopCard());
-                dealerHandValues.clear();
-                dealerHandValues = possibleHandValues(dealerHand);
-            }
-            if ( dealerHandValues.size() == 0 ) {
-                std::cout << "Dealer busted." << std::endl;
-            } else {
-                //compare dealer vs player
-            }
-        } else if ( userChoice == "split" ) {
-
-        } else {
-            std::cout << "\nInvalid option!" << std::endl;
-            break;
-        }
-
-        system("CLS");
+        hand.clear();
     }
+    playerHands.clear();
+
+    for (Card* card : dealerHand) {
+        delete card;
+    }
+    dealerHand.clear();
+}
+
+void Blackjack::fillHands() {
+    deck->shuffle();
+
+    std::vector<Card *> newPlayerHand;
+    newPlayerHand.push_back(deck->getTopCard());
+    dealerHand.push_back(deck->getTopCard());
+    newPlayerHand.push_back(deck->getTopCard());
+    dealerHand.push_back(deck->getTopCard());
+    playerHands.push_back(newPlayerHand);
+
 }
 
 Deck * Blackjack::getDeck() {
     return deck;
 }
 
-bool Blackjack::inBoundsHand(int c)
-{
-    if ( c <= BLACKJACK_VALUE ) return true;
+void Blackjack::hit(int handNum) {
+    playerHands[handNum].push_back(deck->getTopCard());
+}
+
+bool Blackjack::split(int handNum) {
+    if (playerHands[handNum].size() == 2 && playerHands[handNum][0]->getRank() == playerHands[handNum][1]->getRank()) {
+        Card * secondCard = playerHands[handNum].back();
+        playerHands[handNum].pop_back();
+        playerHands[handNum].push_back(deck->getTopCard());
+
+        std::vector<Card *> newHand;
+        newHand.push_back(secondCard);
+        newHand.push_back(deck->getTopCard());
+        playerHands.insert(playerHands.begin() + handNum + 1, newHand);
+        return true;
+    }
     return false;
 }
 
-void Blackjack::playAgainCheck() {
-    char choice;
-    std::cout << "Play again? (Y/N): ";
-    std::cin >> choice;
-    if ( choice == 'N' ) {
-        running = false;
+void Blackjack::hitDealer() {
+    dealerHand.push_back(deck->getTopCard());
+}
+
+void Blackjack::displayDealerHand(bool hideFirstCard) {
+    std::cout << "Dealer: ";
+    if (hideFirstCard) {
+        displayCard(dealerHand[1]);
+        std::cout << "[??] ";
     } else {
-        resetHands();
+        displayHand(dealerHand);
+    }
+    std::cout << std::endl;
+}
+
+void Blackjack::displayPlayerHands() {
+    int n = 1;
+    for ( auto hand : playerHands ) {
+        std::cout << n << ") ";
+        displayHand(hand);
+        std::cout << std::endl;
+        n++;
     }
 }
 
-void Blackjack::resetHands() {
-    std::vector<Card *> newPlayerHand;
-    newPlayerHand.push_back(getDeck()->getTopCard());
-    newPlayerHand.push_back(getDeck()->getTopCard());
-    playerHands.push_back(newPlayerHand);
-    dealerHand.clear();
-    dealerHand.push_back(getDeck()->getTopCard());
-    dealerHand.push_back(getDeck()->getTopCard());
+void Blackjack::displayHand(const std::vector<Card *> &hand) {
+    for (const auto &card : hand) {
+        displayCard(card);
+    }
 }
 
-std::vector<int> Blackjack::possibleHandValues(std::vector<Card *> currentHand)
+void Blackjack::displayCard(const Card *card) {
+    std::cout << '[' << card->getRank() << card->getSuit() << "] ";
+}
+
+
+int Blackjack::calculateHandValue(std::vector<Card *> hand)
 {
-    std::vector<Card::Rank> currentHandRanks;
-    for (auto card : currentHand) {
-        currentHandRanks.push_back(card->getRank());
-    }
-    std::sort(currentHandRanks.begin(), currentHandRanks.end(), std::greater<int>());
+    int value = 0;
+    int numAces = 0;
 
-    std::vector<int> handValues(1,0);
-    for (auto cardRank : currentHandRanks)
-    {
-        std::vector<int> replaceValues;
-        if ( cardRank == 0 ) {
-            for ( auto hv : handValues ) {
-                if (inBoundsHand(hv + 1)) replaceValues.push_back(hv + 1);
-                if (inBoundsHand(hv + 11)) replaceValues.push_back(hv + 11);
-            };
+    for (const auto &card : hand) {
+        Card::Rank rank = card->getRank();
+
+        if (rank == Card::Rank::ACE) {
+            numAces++;
+            value += 11;
+        } else if (rank == Card::Rank::JACK || rank == Card::Rank::QUEEN || rank == Card::Rank::KING) {
+            value += 10;
         } else {
-            if ( cardRank / 10 > 0 ) cardRank = Card::Rank::TEN;
-            for ( auto hv : handValues ) {
-                if (inBoundsHand(hv + cardRank + 1)) replaceValues.push_back(hv + cardRank + 1);
-            };
+            value += static_cast<int>(rank) + 1;
         }
-        std::swap(handValues, replaceValues);   
     }
-    return handValues;
+
+    while (value > 21 && numAces > 0) {
+        value -= 10;
+        numAces--;
+    }
+
+    return value;
+}
+
+int Blackjack::getNumberPlayerHands() {
+    return playerHands.size();
+}
+
+std::vector<Card*> Blackjack::getDealerHand() {
+    return dealerHand;
+}
+
+std::vector<std::vector<Card*>> Blackjack::getPlayerHands() {
+    return playerHands;
 }

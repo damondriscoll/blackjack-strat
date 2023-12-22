@@ -2,25 +2,38 @@
 #define BLACKJACK_H
 
 #include "Deck.h"
-#include <utility>
 
 class Blackjack
 {
 public:
-    Blackjack();
+    Blackjack(int numDecks);
+    ~Blackjack();
+
+    int calculateHandValue(std::vector<Card *> hand);
+    int getNumberPlayerHands();
+
+    void hit(int handNum);
+    bool split(int handNum);
+    void hitDealer();
+
+    std::vector<Card*> getDealerHand();
+    std::vector<std::vector<Card*>> getPlayerHands();
+    
+    void displayDealerHand(bool hideFirstCard);
+    void displayPlayerHands();
+    void displayHand(const std::vector<Card *> &hand);
+    void displayCard(const Card *card);
+
+    void clearHands();
+    void fillHands();
+
     Deck * getDeck();
-    std::vector<int> possibleHandValues(std::vector<Card *> currentHand);
-    bool inBoundsHand(int c);
-    void playAgainCheck();
-    void resetHands();
 
 private:
     Deck * deck;
+
     std::vector<std::vector<Card*>> playerHands;
     std::vector<Card*> dealerHand;
-    int numPlayerHands;
-    
-    bool running;
 
 };
 

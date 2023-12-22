@@ -1,33 +1,51 @@
 #include "Deck.h"
 
-#include <random>
 #include <algorithm>
 
 constexpr int DECK_SIZE = 52;
 
-Deck::Deck(int numberDecks)
+Deck::Deck(int n) : nDecks{n}
 {
-    for (int j = 0; j < numberDecks; j++)
+    refill(); // Initial deck population
+}
+
+Deck::~Deck() {
+    for (Card* card : cardSet) {
+        delete card;
+    }
+
+    cardSet.clear();
+}
+
+void Deck::refill() {
+
+    for (int j = 0; j < nDecks; j++)
     {
-        for (int i = 0; i <= DECK_SIZE; i++)
+        for (int i = 0; i < DECK_SIZE; i++)
         {
             Card * c = new Card{static_cast<Card::Rank>(i % 13), static_cast<Card::Suit>(i % 4)};
             cardSet.push_back(c);
         }
     }
-};
+}
 
-void Deck::shuffleCards() {
+void Deck::shuffle() {
+    std::default_random_engine generator;
     std::random_device rd;
-    std::default_random_engine generator(rd());
+    generator.seed(rd());
     std::shuffle(cardSet.begin(), cardSet.end(), generator);
 }
 
-std::vector<Card*> Deck::getCardSet() {
-    return cardSet;
+int Deck::size() {
+    return cardSet.size();
 }
 
 Card * Deck::getTopCard() {
+    if (cardSet.empty()) {
+        refill();
+        shuffle();
+    }
+
     Card * c = cardSet.back();
     cardSet.pop_back();
     return c;

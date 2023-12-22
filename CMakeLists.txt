@@ -6,12 +6,14 @@ set(SOURCES
     src/Deck.cpp
     src/Blackjack.cpp
     src/main.cpp
+    src/BlackjackGame.cpp
 )
 
 set(HEADERS
     src/Card.h
     src/Deck.h
     src/Blackjack.h
+    src/BlackjackGame.h
 )
 
 add_executable(blackjack ${SOURCES} ${HEADERS})
