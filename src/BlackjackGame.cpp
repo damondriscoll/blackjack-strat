@@ -36,7 +36,10 @@ void BlackjackGame::nextState() {
         }
     } else {
         std::cout << "Invalid choice. Please try again." << std::endl;
+        return;
     }
+
+    // TODO: check for correct move
 
     if (currentHand > blackjack.getNumberPlayerHands()) {
         playDealerTurn();
