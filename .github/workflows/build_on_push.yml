@@ -80,9 +80,10 @@ jobs:
 
       - name: Configure and build
         run: |
+          choco install llvm
           mkdir build
           cd build
-          cmake -DCMAKE_CXX_COMPILER=clang ../
+          cmake -DCMAKE_CXX_COMPILER=clang++ ../
           cmake --build .
       
       - name: Rename file based on OS
