@@ -6,13 +6,11 @@ on:
       - master
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-
+  build_linux:
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        compiler: [gcc, clang, cl]
+        compiler: [gcc]
 
     steps:
       - name: Checkout
@@ -25,44 +23,76 @@ jobs:
         run: |
           mkdir build
           cd build
-          case ${{ matrix.os }} in
-            ubuntu-latest)
-              cmake -DCMAKE_CXX_COMPILER=g++ ../  # Use g++ for Ubuntu
-              ;;
-            macos-latest)
-              cmake -DCMAKE_CXX_COMPILER=clang++ ../  # Use clang++ for macOS
-              ;;
-            windows-latest)
-              cmake -DCMAKE_CXX_COMPILER=cl ../  # Use cl for Windows (MSVC)
-              ;;
-          esac
+          cmake -DCMAKE_CXX_COMPILER=g++ ../  # Use g++ for Ubuntu
           cmake --build .
-
-      - name: Determine executable extension
-        id: get_extension
-        run: |
-          case ${{ matrix.os }} in
-            ubuntu-latest|macos-latest)
-              echo "::set-output name=extension::"
-              ;;
-            windows-latest)
-              echo "::set-output name=extension::.exe"
-              ;;
-          esac
-
+      
       - name: Rename file based on OS
         run: |
-          case ${{ matrix.os }} in
-            ubuntu-latest)
-              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_ubuntu${{ steps.get_extension.outputs.extension }}
-              ;;
-            macos-latest)
-              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_macos${{ steps.get_extension.outputs.extension }}
-              ;;
-            windows-latest)
-              mv ./build/blackjack${{ steps.get_extension.outputs.extension }} ./build/blackjack_windows${{ steps.get_extension.outputs.extension }}
-              ;;
-          esac
+          mv ./build/blackjack ./build/blackjack_ubuntu
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./build/blackjack*
+          tag_name: v1.0.0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        compiler: [clang]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure and build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_CXX_COMPILER=clang++ ../  # Use clang++ for macOS
+          cmake --build .
+      
+      - name: Rename file based on OS
+        run: |
+          mv ./build/blackjack ./build/blackjack_ubuntu
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            ./build/blackjack*
+          tag_name: v1.0.0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        compiler: [cl]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure and build
+        run: |
+          mkdir build
+          cd build
+          cmake -DCMAKE_CXX_COMPILER=cl ../  # Use cl for Windows
+          cmake --build .
+      
+      - name: Rename file based on OS
+        run: |
+          mv ./build/blackjack.exe ./build/blackjack_ubuntu.exe
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
