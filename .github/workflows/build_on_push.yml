@@ -76,12 +76,13 @@ jobs:
           msystem: UCRT64
           update: true
           install: git mingw-w64-ucrt-x86_64-gcc
-      - uses: lukka/get-cmake@latest
       
       - name: Configure and build with g++
         run: |
           pacman --noconfirm -Syuu
           pacman --noconfirm -Syuu
+          pacman --noconfirm -S mingw-w64-x86_64-cmake
+          echo 'export PATH=/mingw64/bin:$PATH' >> $HOME/.bashrc
           mkdir build
           cd build
           cmake -G "Ninja" -B. -S../
