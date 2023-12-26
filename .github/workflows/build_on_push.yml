@@ -82,7 +82,7 @@ jobs:
           pacman --noconfirm -Syuu
           pacman --noconfirm -Syuu
           pacman --noconfirm -S mingw-w64-x86_64-cmake
-          echo 'export PATH=/mingw64/bin:$PATH' >> $HOME/.bashrc
+          echo 'export PATH=/mingw64/bin:$PATH' >> $HOME/.bash_profile
           mkdir build
           cd build
           cmake -G "Ninja" -B. -S../
