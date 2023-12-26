@@ -79,9 +79,10 @@ jobs:
       
       - name: Configure and build with g++
         run: |
+          pacman -S mingw-w64-x86_64-cmake
           mkdir build
           cd build
-          cmake -G "MSYS Makefiles" -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -B. -S../
+          cmake -G "MSYS Makefiles" -B. -S../
           cmake --build .
       
       - name: Rename file based on OS
