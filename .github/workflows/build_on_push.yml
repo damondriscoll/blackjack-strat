@@ -79,7 +79,9 @@ jobs:
       
       - name: Configure and build with g++
         run: |
-          pacman -S mingw-w64-x86_64-cmake
+          pacman --noconfirm -Syuu
+          pacman --noconfirm -Syuu
+          pacman --noconfirm -S mingw-w64-x86_64-cmake
           mkdir build
           cd build
           cmake -G "MSYS Makefiles" -B. -S../
