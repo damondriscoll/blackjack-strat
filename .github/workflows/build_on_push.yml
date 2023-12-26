@@ -66,9 +66,6 @@ jobs:
 
   build_windows:
     runs-on: windows-latest
-    defaults:
-        run:
-          shell: msys2 {0}
     steps:
       - uses: actions/checkout@v3
       - uses: msys2/setup-msys2@v2
@@ -77,15 +74,14 @@ jobs:
           update: true
           install: git mingw-w64-ucrt-x86_64-gcc
       
+      - name: Set up CMake
+        uses: lukka/get-cmake@latest
+      
       - name: Configure and build with g++
         run: |
-          pacman --noconfirm -Syuu
-          pacman --noconfirm -Syuu
-          pacman --noconfirm -S mingw-w64-x86_64-cmake
-          echo 'export PATH=/mingw64/bin:$PATH' >> $HOME/.bash_profile
           mkdir build
           cd build
-          cmake -G "Ninja" -B. -S../
+          cmake -G "MinGW Makefiles" -B. -S../
           cmake --build .
       
       - name: Rename file based on OS
